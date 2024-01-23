@@ -1,16 +1,10 @@
-import glob
-import string
-import unicodedata
-
 import torch
+
+from Lab8.dictionary import findFiles, unicodeToAscii, Dictionary
 
 
 def load_data():
     print("load_data")
-
-
-def find_files(path):
-    return glob.glob(path)
 
 
 def get_default_device():
@@ -21,23 +15,18 @@ def get_default_device():
         return torch.device('cpu')
 
 
-def unicodeToAscii(s, all_letters=string.ascii_letters + " .,;'"):
-    return ''.join(
-        c for c in unicodedata.normalize('NFD', s)
-        if unicodedata.category(c) != 'Mn'
-        and c in all_letters
-    )
-
-
-def build_category_lines():
-    print("build_category_lines")
-
-
 if __name__ == '__main__':
     file_path = 'language_data/names/*.txt'
-    print('[All files]: \n', find_files(file_path))
+    print('[All files]: \n', findFiles(file_path))
 
     device = get_default_device()
     print('[Device]: \n', device)
 
     print('[UnicodeToAscii] example: Ślusàrski: \n', unicodeToAscii('Ślusàrski'))
+
+    dictionary = Dictionary(file_path)
+    dictionary.build_category_lines()
+    print(f'[\'y\' to index = {dictionary.letterToIndex("y")}\n]')
+    print(f'[\'y\' to tensor = {dictionary.letterToTensor("y")}\n]')
+    print(f'[\'Jones\' to tensor = {dictionary.lineToTensor("Jones")}'
+          f'\n shape = {dictionary.lineToTensor("Jones").shape}\n]')
