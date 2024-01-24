@@ -62,3 +62,7 @@ class Dictionary:
         for li, letter in enumerate(line):
             tensor[li][0][self.letterToIndex(letter)] = 1
         return tensor
+
+    def show_info(self):
+        return f'[n_letters = {len(self.all_letters)}]\n' \
+               f'[n_categories = {len(self.all_categories)}]'
