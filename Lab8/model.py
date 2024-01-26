@@ -35,8 +35,8 @@ class RNN(nn.Module):
     def configure_optimizers(self):
         return torch.optim.Adam(self.parameters(), self.lr)
 
-    def evaluate(self, X):
-        hidden = self.initHidden()
+    def evaluate(self, X, device):
+        hidden = self.initHidden(device)
 
         for i in range(X.size()[0]):
             output, hidden = self.forward(X[i], hidden)
