@@ -42,3 +42,29 @@ class RNN(nn.Module):
             output, hidden = self.forward(X[i], hidden)
 
         return output
+
+
+class LSTMTagger(nn.Module):
+    def __init__(self, embedding_dim, input_size, hidden_size, output_size, lr):
+        super(LSTMTagger, self).__init__()
+        self.hidden_size = hidden_size
+
+        self.word_embeddings = nn.Embedding(input_size, embedding_dim)
+        self.lstm = nn.LSTM(embedding_dim, hidden_size)
+        self.hidden2tag = nn.Linear(input_size + hidden_size, hidden_size)
+        self.hidden2tag2 = nn.Linear(input_size + hidden_size, output_size)
+
+        self.lr = lr
+
+    def initHidden(self):
+        # the hidden state needs to be initialized (for the first iteration)
+        return (torch.zeros(1, 1, self.hidden_size),
+                torch.zeros(1, 1, self.hidden_size))
+
+    def forward(self, input, hidden):
+        embeds = self.word_embeddings(input)
+        lstm_out, hidden = self.lstm(embeds.view(len(input), 1, -1), hidden)
+
+        output = input.view(len(input), 1, -1)
+        # TODO not finish yet
+        return output, hidden
